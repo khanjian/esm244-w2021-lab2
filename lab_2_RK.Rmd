@@ -1,0 +1,48 @@
+---
+title: "ESM 244 Lab Week 2"
+author: "Roupen Khanjian"
+date: "1/21/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(janitor)
+library(palmerpenguins)
+library(here)
+
+# For PCA:
+library(ggfortify)
+
+# For ggplot customization:
+library(readxl)
+library(gghighlight)
+library(lubridate)
+library(plotly)
+
+# To make compound figures
+library(patchwork)
+
+```
+
+### Part 1: PCA with penguins
+
+```{r}
+penguin_pca <- penguins %>% 
+  select(body_mass_g, ends_with("_mm")) %>%  # helper function for select
+  drop_na() %>% # drop na obs from any column
+  scale() %>% 
+  prcomp()
+  
+penguin_pca$rotation # loadings are here for the PCs  
+
+penguin_complete <- penguins %>% 
+  drop_na(body_mass_g, ends_with("_mm"))
+
+autoplot(penguin_pca,
+         data = penguin_complete)
+```
+
+
+
