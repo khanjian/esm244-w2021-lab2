@@ -41,7 +41,10 @@ penguin_complete <- penguins %>%
   drop_na(body_mass_g, ends_with("_mm"))
 
 autoplot(penguin_pca,
-         data = penguin_complete)
+         data = penguin_complete,
+         colour = "species",
+         loadings = TRUE,
+         loadings.label = TRUE)
 ```
 
 
