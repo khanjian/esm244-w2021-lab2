@@ -44,8 +44,50 @@ autoplot(penguin_pca,
          data = penguin_complete,
          colour = "species",
          loadings = TRUE,
-         loadings.label = TRUE)
+         loadings.label = TRUE) +
+  theme_minimal() #  can add ggplot functions to autoplot, can also change arrow size and other things. 
+
+# other ways to make pca biplots in r as well. 
 ```
+
+### Part 2: ggplot2 customization & reading in different file types
+
+#### read in a .xlsx file & do some wrangling
+
+```{r}
+fish_noaa <- read_excel(here("data", "foss_landings.xlsx")) %>% 
+  clean_names() %>% # default is to convert all col names to snake case
+  mutate(across(where(is.character), tolower)) %>%  # for any char col use func `to_lower`
+  mutate(nmfs_name = str_sub(nmfs_name, end = -4)) %>%  #  Here we are removing the last 4 characters from the col. 
+  filter(confidentiality == "public")
+
+# usually someone has already written a function you want to use. 
+```
+
+Make a customized graph
+
+```{r}
+fish_plot <- ggplot(data = fish_noaa, aes(x = year, y = pounds)) +
+  geom_line(aes(color = nmfs_name), show.legend = FALSE) +
+  theme_minimal()
+
+fish_plot
+
+ggplotly(fish_plot) 
+
+### Use gghighlight to highlight certain series
+
+ggplot(data = fish_noaa, aes(x = year, y = pounds, group = nmfs_name)) +
+  geom_line() +
+  theme_minimal() +
+  gghighlight(nmfs_name == "tunas")
+
+ggplot(data = fish_noaa, aes(x = year, y = pounds, group = nmfs_name)) +
+  geom_line(aes(color = nmfs_name)) +
+  theme_minimal() +
+  gghighlight(max(pounds) > 1e8) # highlight only nmfs_name where max pounds is > 1e8
+```
+
 
 
 
